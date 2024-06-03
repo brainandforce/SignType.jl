@@ -3,7 +3,7 @@ module SignType
 import Base: promote_rule, convert
 import Base: <, iseven, isodd
 import Base: +, -, *, /, //, sqrt, ^
-import Base: iszero, zero, one
+import Base: iszero, isone, zero, one
 import Base: show
 
 """
@@ -144,6 +144,8 @@ sqrt(s::Sign) = s === Sign(+) ? Sign(+) : Base.Math.throw_complex_domainerror(:s
 
 # IMPORTANT: zero(Sign) cannot be of type Sign!
 iszero(::Sign) = false
+isone(s::Sign) = !reinterpret(Bool, s)
+
 zero(::Union{Sign,Type{Sign}}) = false
 one(::Union{Sign,Type{Sign}}) = Sign(+)
 

@@ -87,6 +87,8 @@ Aqua.test_all(SignType; unbound_args = false)
         @test signbit(Sign(-)) === true
         @test iszero(Sign(+)) === false
         @test iszero(Sign(-)) === false
+        @test isone(Sign(+)) === true
+        @test isone(Sign(-)) === false
         @test zero(Sign) === false
         @test one(Sign) === Sign(+)
         @test iseven(Sign(+)) === false
