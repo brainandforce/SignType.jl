@@ -14,9 +14,16 @@ Aqua.test_all(SignType; unbound_args = false)
         # Signed integers
         @test reinterpret(Bool, Sign(+1)) === signbit(+1)
         @test reinterpret(Bool, Sign(-1)) === signbit(-1)
+        @test reinterpret(Bool, Sign(big(+420))) === signbit(big(+420))
+        @test reinterpret(Bool, Sign(big(-420))) === signbit(big(-420))
         # Floating point numbers
         @test reinterpret(Bool, Sign(+0.0)) === signbit(+0.0)
         @test reinterpret(Bool, Sign(-0.0)) === signbit(-0.0)
+        @test reinterpret(Bool, Sign(big(+1.0))) === signbit(big(+1.0))
+        @test reinterpret(Bool, Sign(big(-1.0))) === signbit(big(-1.0))
+        # Rationals
+        @test reinterpret(Bool, Sign(+1//2)) === signbit(+1//2)
+        @test reinterpret(Bool, Sign(-1//2)) === signbit(-1//2)
     end
     @testset "Real promotion" begin
         @test promote_type(Sign, Sign) === Sign
@@ -79,7 +86,7 @@ Aqua.test_all(SignType; unbound_args = false)
         @test Sign(+)^1 === Sign(+)
         @test Sign(-)^0 === Sign(+)
         @test Sign(-)^1 === Sign(-)
-        # Testing method ambiguity resolution
+        # Method ambiguity resolution
         @test Sign(+)^false === Sign(+)
         @test Sign(+)^true === Sign(+)
         @test Sign(-)^false === Sign(+)
