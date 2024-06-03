@@ -139,6 +139,9 @@ isodd(::Sign) = true
 sqrt(s::Sign) = s === Sign(+) ? Sign(+) : Base.Math.throw_complex_domainerror(:sqrt, s)
 # Exponentiation with integers is type-stable
 ^(s::Sign, n::Integer) = reinterpret(Sign, reinterpret(Bool, s) && isodd(n))
+# Needed to resolve method ambiguities
+^(s::Sign, b::Bool) = reinterpret(Sign, reinterpret(Bool, s) && b)
+^(s::Sign, n::BigInt) = reinterpret(Sign, reinterpret(Bool, s) && isodd(n))
 
 #---zero() and one()-------------------------------------------------------------------------------#
 

@@ -79,6 +79,15 @@ Aqua.test_all(SignType; unbound_args = false)
         @test Sign(+)^1 === Sign(+)
         @test Sign(-)^0 === Sign(+)
         @test Sign(-)^1 === Sign(-)
+        # Testing method ambiguity resolution
+        @test Sign(+)^false === Sign(+)
+        @test Sign(+)^true === Sign(+)
+        @test Sign(-)^false === Sign(+)
+        @test Sign(-)^true === Sign(-)
+        @test Sign(+)^big(0) === Sign(+)
+        @test Sign(+)^big(1) === Sign(+)
+        @test Sign(-)^big(0) === Sign(+)
+        @test Sign(-)^big(1) === Sign(-)
     end
     @testset "Properties" begin
         @test sign(Sign(+)) === Sign(+)
