@@ -59,7 +59,7 @@ The square root of `Sign(-)` throws a `DomainError`; use `sqrt(complex(Sign(-)))
     Because zero is not representable by a `Sign` type, `zero(Sign)` returns `false` as a strong
     zero, which is a `Bool`, not a `Sign`!
 """
-primitive type Sign <: Integer 8 end
+primitive type Sign <: Signed 8 end
 
 # constructors with + and - literals
 Sign(::typeof(+)) = reinterpret(Sign, false)
