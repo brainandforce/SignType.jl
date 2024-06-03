@@ -1,8 +1,9 @@
 module SignType
 
 import Base: promote_rule, convert
-import Base: <, +, -, *, /, //, sqrt
-import Base: zero, one
+import Base: <, iseven, isodd
+import Base: +, -, *, /, //, sqrt, ^
+import Base: iszero, zero, one
 import Base: show
 
 """
@@ -113,13 +114,16 @@ promote_rule(::Type{Sign}, ::Type{T}) where T<:Integer = signed(T)
 promote_rule(::Type{Sign}, ::Type{T}) where T<:AbstractIrrational = Float64
 promote_rule(::Type{Sign}, ::Type{T}) where T<:Real = T
 
-#---Equality and comparison------------------------------------------------------------------------#
+#---Equality, comparison, and properties-----------------------------------------------------------#
 
 <(x::Sign, y::Sign) = (x == Sign(-) && y == Sign(+))
 
 # Avoid promotion in the unsigned case
 <(x::Sign, ::Union{Bool,Unsigned}) = (x === Sign(-))
 <(x::Union{Bool,Unsigned}, y::Sign) = iszero(x) && y === Sign(+)
+
+iseven(::Sign) = false
+isodd(::Sign) = true
 
 #---Arithmetic-------------------------------------------------------------------------------------#
 
@@ -133,10 +137,13 @@ promote_rule(::Type{Sign}, ::Type{T}) where T<:Real = T
 //(x::Sign, y::Sign) = *(x, y)
 # Square roots don't have to become floats
 sqrt(s::Sign) = s === Sign(+) ? Sign(+) : Base.Math.throw_complex_domainerror(:sqrt, s)
+# Exponentiation with integers is type-stable
+^(s::Sign, n::Integer) = reinterpret(Sign, reinterpret(Bool, s) && isodd(n))
 
 #---zero() and one()-------------------------------------------------------------------------------#
 
 # IMPORTANT: zero(Sign) cannot be of type Sign!
+iszero(::Sign) = false
 zero(::Union{Sign,Type{Sign}}) = false
 one(::Union{Sign,Type{Sign}}) = Sign(+)
 

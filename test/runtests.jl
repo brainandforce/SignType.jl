@@ -73,13 +73,25 @@ Aqua.test_all(SignType; unbound_args = false)
         @test Sign(+) // Sign(-) === Sign(-)
         @test Sign(-) // Sign(+) === Sign(-)
         @test Sign(-) // Sign(-) === Sign(+)
+        @test sqrt(Sign(+)) === Sign(+)
+        @test_throws DomainError sqrt(Sign(-))
+        @test Sign(+)^0 === Sign(+)
+        @test Sign(+)^1 === Sign(+)
+        @test Sign(-)^0 === Sign(+)
+        @test Sign(-)^1 === Sign(-)
     end
-    @testset "Miscellaneous" begin
+    @testset "Properties" begin
         @test sign(Sign(+)) === Sign(+)
         @test sign(Sign(-)) === Sign(-)
         @test signbit(Sign(+)) === false
         @test signbit(Sign(-)) === true
+        @test iszero(Sign(+)) === false
+        @test iszero(Sign(-)) === false
         @test zero(Sign) === false
         @test one(Sign) === Sign(+)
+        @test iseven(Sign(+)) === false
+        @test iseven(Sign(-)) === false
+        @test isodd(Sign(+)) === true
+        @test isodd(Sign(-)) === true
     end
 end
