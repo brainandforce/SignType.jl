@@ -1,0 +1,16 @@
+name = "SignType"
+uuid = "9609daed-dfca-48a0-b6c8-6de1ae2e1f05"
+authors = ["Brandon Flores (bsflores@wisc.edu)"]
+version = "0.1.0-dev"
+
+[compat]
+Aqua = "0.8"
+Test = "1"
+julia = "1.8"
+
+[extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Aqua", "Test"]
