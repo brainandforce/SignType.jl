@@ -2,6 +2,7 @@
 
 [![Build Status][ci-status-img]][ci-status-url]
 [![Coverage][codecov-img]][codecov-url]
+[![Aqua.jl][aqua-img]][aqua-url]
 
 This package provides the `Sign` type, which represents the sign bit of a signed integer or float.
 While the data stored by `Sign` is identical to that of `Bool`, the arithmetic semantics are defined
