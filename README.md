@@ -33,9 +33,6 @@ subtraction of `Sign` instances (or `Sign` and `Bool` instances) results in an `
 Rational division of `Sign` instances returns a `Sign`, as `Rational{Sign}` can only represent the
 exact same range of values as `Sign`.
 
-`sqrt(Sign(+))` returns `Sign(+)` instead of a `Float64`; `sqrt(Sign(-))` throws a `DomainError`
-resolvable by complex conversion as usual.
-
 ## Other number systems
 
 `Sign` construction will fail on elements of unordered fields, such as `Complex` instances.

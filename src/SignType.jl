@@ -135,8 +135,6 @@ isodd(::Sign) = true
 /(x::Sign, y::Sign) = *(x, y)
 # There is no reason to construct Rational{Sign}; it is equivalent to `Sign`
 //(x::Sign, y::Sign) = *(x, y)
-# Square roots don't have to become floats
-sqrt(s::Sign) = s === Sign(+) ? Sign(+) : Base.Math.throw_complex_domainerror(:sqrt, s)
 # Exponentiation with integers is type-stable
 ^(s::Sign, n::Integer) = reinterpret(Sign, reinterpret(Bool, s) && isodd(n))
 # Needed to resolve method ambiguities
