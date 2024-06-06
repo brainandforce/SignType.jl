@@ -62,20 +62,19 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
     @testset "Conversion to other types" begin
         @test Sign(Sign(+)) === Sign(+)
         @test Sign(Sign(-)) === Sign(-)
-        @test Bool(Sign(+)) === true
-        @test_throws InexactError Bool(Sign(-))
-        for T in UNSIGNED_TYPES
+        for T in tuple(Bool, UNSIGNED_TYPES..., UNSIGNED_RATIONALS...)
             @test T(Sign(+)) === one(T)
             @test_throws InexactError T(Sign(-))
         end
-        for T in SIGNED_TYPES
+        for T in tuple(SIGNED_TYPES..., SIGNED_RATIONALS..., FLOAT_TYPES...)
             @test T(Sign(+)) == +one(T)
             @test T(Sign(-)) == -one(T)
         end
-        for T in FLOAT_TYPES
-            @test T(Sign(+)) == +one(T)
-            @test T(Sign(-)) == -one(T)
-        end
+        # This should create a Rational{Int}, since Rational{Sign} is redundant
+        @test Rational(Sign(+)) === +1//1
+        @test Rational(Sign(-)) === -1//1
+        @test Integer(Sign(+)) === Sign(+)
+        @test Integer(Sign(-)) === Sign(-)
     end
     @testset "Real promotion" begin
         @test promote_type(Sign, Sign) === Sign

@@ -97,6 +97,7 @@ Base.BigInt(s::Sign) = BigInt(ifelse(reinterpret(Bool, s), -1, 1))
 Base.Integer(s::Sign) = s
 
 Base.Rational{T}(s::Sign) where T<:Integer = Rational{T}(ifelse(reinterpret(Bool, s), -1, 1))
+# There's no point in making a Rational{Sign}, so just assume Rational{Int} is desired
 Base.Rational(s::Sign) = Rational{Int}(ifelse(reinterpret(Bool, s), -1, 1))
 
 Base.Float16(s::Sign) = Float16(ifelse(reinterpret(Bool, s), -1, 1))
