@@ -109,22 +109,63 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test Sign(+) >= UInt8(0)
         @test UInt8(0) < Sign(+)
         @test UInt8(0) >= Sign(-)
+        @test abs(Sign(+)) === Sign(+)
+        @test abs(Sign(-)) === Sign(+)
+        @test abs2(Sign(+)) === Sign(+)
+        @test abs2(Sign(-)) === Sign(+)
+        @test Base.checked_abs(Sign(+)) === Sign(+)
+        @test Base.checked_abs(Sign(-)) === Sign(+)
+    end
+    @testset "Boolean operators" begin
+        # Bitwise operators
+        # and
+        @test Sign(+) & Sign(+) === Sign(+)
+        @test Sign(+) & Sign(-) === Sign(+)
+        @test Sign(-) & Sign(-) === Sign(-)
+        @test Sign(-) & Sign(+) === Sign(+)
+        # or
+        @test Sign(+) | Sign(+) === Sign(+)
+        @test Sign(+) | Sign(-) === Sign(-)
+        @test Sign(-) | Sign(-) === Sign(-)
+        @test Sign(-) | Sign(+) === Sign(-)
+        # xor
+        @test Sign(+) ⊻ Sign(+) === Sign(+)
+        @test Sign(+) ⊻ Sign(-) === Sign(-)
+        @test Sign(-) ⊻ Sign(-) === Sign(+)
+        @test Sign(-) ⊻ Sign(+) === Sign(-)
+        # not
+        @test ~Sign(+) === Sign(-)
+        @test ~Sign(-) === Sign(+)
+        # Boolean operators
+        # not
+        @test !Sign(+) === Sign(-)
+        @test !Sign(-) === Sign(+)
     end
     @testset "Arithmetic" begin
+        # Negation
         @test -Sign(+) === Sign(-)
         @test -Sign(-) === Sign(+)
+        # Flipping signs
+        @test flipsign(Sign(+), Sign(+)) === Sign(+)
+        @test flipsign(Sign(-), Sign(+)) === Sign(-)
+        @test flipsign(Sign(+), Sign(-)) === Sign(-)
+        @test flipsign(Sign(-), Sign(-)) === Sign(+)
+        # Addition
         @test Sign(+) + Sign(+) === 2
         @test Sign(+) + Sign(-) === 0
         @test Sign(-) + Sign(+) === 0
         @test Sign(-) + Sign(-) === -2
+        # Subtraction
         @test Sign(+) - Sign(+) === 0
         @test Sign(+) - Sign(-) === 2
         @test Sign(-) - Sign(+) === -2
         @test Sign(-) - Sign(-) === 0
+        # Multiplication
         @test Sign(+) * Sign(+) === Sign(+)
         @test Sign(+) * Sign(-) === Sign(-)
         @test Sign(-) * Sign(+) === Sign(-)
         @test Sign(-) * Sign(-) === Sign(+)
+        # Division
         @test Sign(+) / Sign(+) === Sign(+)
         @test Sign(+) / Sign(-) === Sign(-)
         @test Sign(-) / Sign(+) === Sign(-)
@@ -134,6 +175,7 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test Sign(-) // Sign(+) === Sign(-)
         @test Sign(-) // Sign(-) === Sign(+)
         @test_throws DomainError sqrt(Sign(-))
+        # Exponentiation
         @test Sign(+)^0 === Sign(+)
         @test Sign(+)^1 === Sign(+)
         @test Sign(-)^0 === Sign(+)
@@ -147,6 +189,15 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test Sign(+)^big(1) === Sign(+)
         @test Sign(-)^big(0) === Sign(+)
         @test Sign(-)^big(1) === Sign(-)
+        # Euclidean division/remainder
+        @test div(Sign(+), Sign(+)) === Sign(+)
+        @test div(Sign(-), Sign(+)) === Sign(-)
+        @test div(Sign(+), Sign(-)) === Sign(-)
+        @test div(Sign(-), Sign(-)) === Sign(+)
+        @test rem(Sign(+), Sign(+)) === false
+        @test rem(Sign(-), Sign(+)) === false
+        @test rem(Sign(+), Sign(-)) === false
+        @test rem(Sign(-), Sign(-)) === false
     end
     @testset "Properties" begin
         @test sign(Sign(+)) === Sign(+)

@@ -2,7 +2,8 @@ module SignType
 
 import Base: promote_rule, convert
 import Base: <, iseven, isodd
-import Base: +, -, *, /, //, sqrt, ^
+import Base: &, |, ~, !, xor
+import Base: flipsign, +, -, *, /, //, ^, div, rem
 import Base: iszero, isone, zero, one
 import Base: show
 
@@ -114,6 +115,8 @@ convert(::Type{Sign}, x::Real) = iszero(x) ? throw(InexactError(:convert, Sign, 
 promote_rule(::Type{Sign}, ::Type{T}) where T<:Integer = signed(T)
 promote_rule(::Type{Sign}, ::Type{T}) where T<:AbstractIrrational = Float64
 promote_rule(::Type{Sign}, ::Type{T}) where T<:Real = T
+# TODO: Since Rational{Sign} is redundant, just convert the result to Sign
+# promote_rule(::Type{Sign}, ::Type{Rational{Sign}}) === Sign
 
 #---Equality, comparison, and properties-----------------------------------------------------------#
 
@@ -126,13 +129,29 @@ promote_rule(::Type{Sign}, ::Type{T}) where T<:Real = T
 iseven(::Sign) = false
 isodd(::Sign) = true
 
+abs(::Sign) = Sign(+)
+abs2(::Sign) = Sign(+)
+
+Base.checked_abs(::Sign) = Sign(+)
+
+#---Boolean operators------------------------------------------------------------------------------#
+
+for f in (:~, :!)
+    @eval $f(x::Sign) = reinterpret(Sign, $f(reinterpret(Bool, x)))
+end
+
+for f in (:&, :|, :xor)
+    @eval $f(x::Sign, y::Sign) = reinterpret(Sign, $f(reinterpret(Bool, x), reinterpret(Bool, y)))
+end
+
 #---Arithmetic-------------------------------------------------------------------------------------#
 
--(x::Sign) = reinterpret(Sign, !reinterpret(Bool, x))
+-(x::Sign) = ~x
+flipsign(x::Sign, y::Sign) = xor(x, y)
 
 +(x::Sign, y::Sign) = +(Int(x), Int(y))
 -(x::Sign, y::Sign) = -(Int(x), Int(y))
-*(x::Sign, y::Sign) = reinterpret(Sign, xor(reinterpret(Bool, x), reinterpret(Bool, y)))
+*(x::Sign, y::Sign) = xor(x, y)
 /(x::Sign, y::Sign) = *(x, y)
 # There is no reason to construct Rational{Sign}; it is equivalent to `Sign`
 //(x::Sign, y::Sign) = *(x, y)
@@ -141,6 +160,9 @@ isodd(::Sign) = true
 # Needed to resolve method ambiguities
 ^(s::Sign, b::Bool) = reinterpret(Sign, reinterpret(Bool, s) && b)
 ^(s::Sign, n::BigInt) = reinterpret(Sign, reinterpret(Bool, s) && isodd(n))
+
+div(x::Sign, y::Sign, ::RoundingMode) = *(x, y)
+rem(::Sign, ::Sign) = false
 
 #---zero() and one()-------------------------------------------------------------------------------#
 
