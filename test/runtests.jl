@@ -109,12 +109,6 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test Sign(+) >= UInt8(0)
         @test UInt8(0) < Sign(+)
         @test UInt8(0) >= Sign(-)
-        @test abs(Sign(+)) === Sign(+)
-        @test abs(Sign(-)) === Sign(+)
-        @test abs2(Sign(+)) === Sign(+)
-        @test abs2(Sign(-)) === Sign(+)
-        @test Base.checked_abs(Sign(+)) === Sign(+)
-        @test Base.checked_abs(Sign(-)) === Sign(+)
     end
     @testset "Boolean operators" begin
         # Bitwise operators
@@ -220,6 +214,12 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test iseven(Sign(-)) === false
         @test isodd(Sign(+)) === true
         @test isodd(Sign(-)) === true
+        @test abs(Sign(+)) === Sign(+)
+        @test abs(Sign(-)) === Sign(+)
+        @test abs2(Sign(+)) === Sign(+)
+        @test abs2(Sign(-)) === Sign(+)
+        @test Base.checked_abs(Sign(+)) === Sign(+)
+        @test Base.checked_abs(Sign(-)) === Sign(+)
     end
     @testset "Printed representation" begin
         @test eval(Meta.parse(repr("text/plain", Sign(+)))) === Sign(+)
