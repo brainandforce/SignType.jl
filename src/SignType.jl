@@ -161,7 +161,12 @@ flipsign(x::Sign, y::Sign) = xor(x, y)
 ^(s::Sign, b::Bool) = reinterpret(Sign, reinterpret(Bool, s) && b)
 ^(s::Sign, n::BigInt) = reinterpret(Sign, reinterpret(Bool, s) && isodd(n))
 
-div(x::Sign, y::Sign, ::RoundingMode) = *(x, y)
+div(x::Sign, y::Sign) = *(x, y)
+# Needed to resolve method ambiguities
+div(x::Sign, y::Sign, ::RoundingMode{:FromZero}) = *(x, y)
+div(x::Sign, y::Sign, ::RoundingMode{:Nearest}) = *(x, y)
+div(x::Sign, y::Sign, ::RoundingMode{:Down}) = *(x, y)
+div(x::Sign, y::Sign, ::RoundingMode{:Up}) = *(x, y)
 rem(::Sign, ::Sign) = false
 
 #---zero() and one()-------------------------------------------------------------------------------#

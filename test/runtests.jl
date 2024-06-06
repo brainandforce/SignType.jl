@@ -194,6 +194,12 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test div(Sign(-), Sign(+)) === Sign(-)
         @test div(Sign(+), Sign(-)) === Sign(-)
         @test div(Sign(-), Sign(-)) === Sign(+)
+        for R in (RoundUp, RoundDown, RoundNearest, RoundFromZero)
+            @test div(Sign(+), Sign(+), R) === Sign(+)
+            @test div(Sign(-), Sign(+), R) === Sign(-)
+            @test div(Sign(+), Sign(-), R) === Sign(-)
+            @test div(Sign(-), Sign(-), R) === Sign(+)
+        end
         @test rem(Sign(+), Sign(+)) === false
         @test rem(Sign(-), Sign(+)) === false
         @test rem(Sign(+), Sign(-)) === false
