@@ -60,6 +60,8 @@ Aqua.test_all(SignType; unbound_args = false)
         @test UInt8(0) >= Sign(-)
     end
     @testset "Arithmetic" begin
+        @test -Sign(+) === Sign(-)
+        @test -Sign(-) === Sign(+)
         @test Sign(+) + Sign(+) === 2
         @test Sign(+) + Sign(-) === 0
         @test Sign(-) + Sign(+) === 0
