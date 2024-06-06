@@ -3,6 +3,12 @@ using Aqua, Test
 
 Aqua.test_all(SignType; unbound_args = false)
 
+const UNSIGNED_TYPES = (UInt8, UInt16, UInt32, UInt64, UInt128)     # subtypes(Unsigned)
+const SIGNED_TYPES = (Int8, Int16, Int32, Int64, Int128, BigInt)    # subtypes(Signed)
+const FLOAT_TYPES = (BigFloat, Float16, Float32, Float64)           # subtypes(AbstractFloat)
+const UNSIGNED_RATIONALS = map(T -> Rational{T}, UNSIGNED_TYPES)
+const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
+
 @testset "All tests" begin
     @testset "Construction" begin
         # + and - literals
@@ -25,16 +31,63 @@ Aqua.test_all(SignType; unbound_args = false)
         @test reinterpret(Bool, Sign(+1//2)) === signbit(+1//2)
         @test reinterpret(Bool, Sign(-1//2)) === signbit(-1//2)
     end
+    @testset "Conversion to Sign" begin
+        @test Bool(Sign(+)) === true
+        @test_throws InexactError Bool(Sign(-))
+        for T in UNSIGNED_TYPES
+            @test convert(Sign, +one(T)) === Sign(+)
+            @test convert(Sign, -one(T)) === Sign(+)
+            # Constructing a `Sign` should always match the result of `signbit` when reinterpreted
+            @test reinterpret(Bool, Sign(zero(T))) === signbit(zero(T))
+            # Zero values are not representable as a Sign; conversion must fail
+            @test_throws InexactError convert(Sign, zero(T))
+        end
+        for T in SIGNED_TYPES
+            @test convert(Sign, +one(T)) === Sign(+)
+            @test convert(Sign, -one(T)) === Sign(-)
+            # Constructing a `Sign` should always match the result of `signbit` when reinterpreted
+            @test reinterpret(Bool, Sign(zero(T))) === signbit(signbit(zero(T)))
+            # Zero values are not representable as a Sign; conversion must fail
+            @test_throws InexactError convert(Sign, zero(T))
+        end
+        for T in FLOAT_TYPES
+            @test convert(Sign, +one(T)) === Sign(+)
+            @test convert(Sign, -one(T)) === Sign(-)
+            # Constructing a `Sign` should always match the result of `signbit` when reinterpreted
+            @test reinterpret(Bool, Sign(zero(T))) === signbit(signbit(zero(T)))
+            # Zero is signed in floats, so construction should always succeed here
+            @test convert(Sign, +zero(T)) === Sign(+)
+            @test convert(Sign, -zero(T)) === Sign(+)
+        end
+    end
+    @testset "Conversion to other types" begin
+        @test Sign(Sign(+)) === Sign(+)
+        @test Sign(Sign(-)) === Sign(-)
+        @test Bool(Sign(+)) === true
+        @test_throws InexactError Bool(Sign(-))
+        for T in UNSIGNED_TYPES
+            @test T(Sign(+)) === one(T)
+            @test_throws InexactError T(Sign(-))
+        end
+        for T in SIGNED_TYPES
+            @test T(Sign(+)) === +one(T)
+            @test T(Sign(-)) === -one(T)
+        end
+        for T in FLOAT_TYPES
+            @test T(Sign(+)) === +one(T)
+            @test T(Sign(-)) === -one(T)
+        end
+    end
     @testset "Real promotion" begin
         @test promote_type(Sign, Sign) === Sign
         @test promote_type(Sign, Bool) === Int
-        for T in (UInt8, UInt16, UInt32, UInt64, UInt128)       # subtypes(Unsigned)
+        for T in UNSIGNED_TYPES
             @test promote_type(Sign, T) === signed(T)
         end
-        for T in (Int8, Int16, Int32, Int64, Int128, BigInt)    # subtypes(Signed)
+        for T in SIGNED_TYPES
             @test promote_type(Sign, T) === T
         end
-        for T in (BigFloat, Float16, Float32, Float64)          # subtypes(AbstractFloat)
+        for T in FLOAT_TYPES
             @test promote_type(Sign, T) === T
         end
         @test promote_type(Sign, typeof(π)) === Float64
