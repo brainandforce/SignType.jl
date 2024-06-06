@@ -1,7 +1,7 @@
 module SignType
 
 import Base: promote_rule, convert
-import Base: <, iseven, isodd
+import Base: <, iseven, isodd, abs, abs2
 import Base: &, |, ~, !, xor
 import Base: flipsign, +, -, *, /, //, ^, div, rem
 import Base: iszero, isone, zero, one
