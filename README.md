@@ -1,5 +1,8 @@
 # SignType.jl
 
+[![Build Status][ci-status-img]][ci-status-url]
+[![Coverage][codecov-img]][codecov-url]
+
 This package provides the `Sign` type, which represents the sign bit of a signed integer or float.
 While the data stored by `Sign` is identical to that of `Bool`, the arithmetic semantics are defined
 to match the behaviors of the real numbers `+1` and `-1`.
@@ -36,3 +39,10 @@ exact same range of values as `Sign`.
 ## Other number systems
 
 `Sign` construction will fail on elements of unordered fields, such as `Complex` instances.
+
+[ci-status-img]:    https://github.com/brainandforce/SignType.jl/workflows/CI/badge.svg
+[ci-status-url]:    https://github.com/brainandforce/SignType.jl/actions
+[aqua-img]:         https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg
+[aqua-url]:         https://github.com/JuliaTesting/Aqua.jl
+[codecov-img]:      https://codecov.io/gh/brainandforce/SignType.jl/branch/main/graph/badge.svg
+[codecov-url]:      https://codecov.io/gh/brainandforce/SignType.jl/
