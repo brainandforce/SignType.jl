@@ -111,4 +111,8 @@ Aqua.test_all(SignType; unbound_args = false)
         @test isodd(Sign(+)) === true
         @test isodd(Sign(-)) === true
     end
+    @testset "Printed representation" begin
+        @test eval(Meta.parse(repr("text/plain", Sign(+)))) === Sign(+)
+        @test eval(Meta.parse(repr("text/plain", Sign(-)))) === Sign(-)
+    end
 end
