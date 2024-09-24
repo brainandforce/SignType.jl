@@ -3,7 +3,7 @@ module SignType
 import Base: promote_rule, convert
 import Base: <, iseven, isodd, abs, abs2
 import Base: &, |, ~, !, xor
-import Base: flipsign, +, -, *, /, //, ^, div, rem
+import Base: flipsign, copysign, +, -, *, /, //, ^, div, rem
 import Base: iszero, isone, zero, one
 import Base: show
 
@@ -166,6 +166,12 @@ end
 
 -(x::Sign) = ~x
 flipsign(x::Sign, y::Sign) = xor(x, y)
+copysign(::Sign, y::Real) = Sign(y)
+# Needed to resolve method ambiguities
+copysign(::Sign, y::Signed) = Sign(y)
+copysign(::Sign, y::Float16) = Sign(y)
+copysign(::Sign, y::Float32) = Sign(y)
+copysign(::Sign, y::Float64) = Sign(y)
 
 +(x::Sign, y::Sign) = +(Int(x), Int(y))
 -(x::Sign, y::Sign) = -(Int(x), Int(y))
