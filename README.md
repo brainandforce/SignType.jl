@@ -39,7 +39,8 @@ exact same range of values as `Sign`.
 
 ## Other number systems
 
-`Sign` construction will fail on elements of unordered fields, such as `Complex` instances.
+`Sign` construction will fail on elements of unordered fields, such as `Complex` instances. However,
+it may still work if the value of the input is a real number.
 
 [ci-status-img]:    https://github.com/brainandforce/SignType.jl/workflows/CI/badge.svg
 [ci-status-url]:    https://github.com/brainandforce/SignType.jl/actions
