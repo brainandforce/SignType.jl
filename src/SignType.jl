@@ -22,7 +22,8 @@ twos' complement representation. With the exception of zero elements, the behavi
 `Base.sign`.
 
 For other types `T<:Number`, `Sign(::T)` is only defined if `T` represents an element of an ordered
-field, allowing for well-defined comparisons of elements.
+field, allowing for well-defined comparisons of elements. `Sign(z::Complex)` will throw an
+`InexactError` unless `imag(z)` is zero.
 
 Special constructors that utilize the functions `+` and `-` as literal inputs are defined, so that
 `Sign(+)` and `Sign(-)` behave as one would expect.
@@ -30,18 +31,29 @@ Special constructors that utilize the functions `+` and `-` as literal inputs ar
 # Conversion
 
 Conversion is identical to construction, with one important exception: converting a zero element
-to a `Sign` always fails with an `InexactError`, even though constructing it always succeeds.
+to a `Sign` always fails with an `InexactError`, even though constructing it always succeeds 
+(defaulting to the the sign associated with that element):
+```julia-repl
+julia> Sign(-0.0)
+Sign(-)
 
-To treat a `Sign` `s` as a `Bool`, use `reinterpret(Bool, s)`.
+julia> convert(Sign, 0.0)
+ERROR: InexactError: convert(Sign, -0.0)
+Stacktrace:
+...
+```
+To treat a `Sign` `s` as a `Bool`, use `reinterpret(Bool, s)`. Construction or conversion uses
+arithmetic semantics, so `Bool(Sign(+)) === true` and `Bool(Sign(-))` throws an `InexactError`.
 
 # Promotion
 
 In general, `Sign` promotes in the following manner:
-  * `Sign` and `T<:Integer` promote to `signed(T)`. `Sign` and `Unsigned` integers promote to the
-    corresponding signed integers, and `Sign` and `Bool` promote to `Int`.
+  * `Sign` and `T<:Integer` promote to `signed(T)`.
+  * `Sign` and `Bool` promote to `Int`.
   * `Sign` and `AbstractIrrational` promote to `Float64`, as negation of an `AbstractIrrational`
     results in a `Float64` by default.
-  * `Sign` and `T<:Real` promote to `T`.
+  * `Sign` and `T<:Real` promote to `T` by default. This assumes `T` can represent negative numbers;
+    a promote rule must be defined if this is not the case.
 
 # Arithmetic
 
@@ -59,6 +71,12 @@ The square root of `Sign(-)` throws a `DomainError`; use `sqrt(complex(Sign(-)))
 !!! danger
     Because zero is not representable by a `Sign` type, `zero(Sign)` returns `false` as a strong
     zero, which is a `Bool`, not a `Sign`!
+
+# Logical operators
+
+Logical operators on `Sign` instances have identical semantics to `Bool` in terms of their bitwise
+representations: `Sign(+)` acts like `false`, and `Sign(-)` acts like `true`. All logical operators
+supported on `Bool` are also supported on `Sign`.
 """
 primitive type Sign <: Signed 8 end
 
