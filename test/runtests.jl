@@ -144,6 +144,22 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test flipsign(Sign(-), Sign(+)) === Sign(-)
         @test flipsign(Sign(+), Sign(-)) === Sign(-)
         @test flipsign(Sign(-), Sign(-)) === Sign(+)
+        # Copying signs
+        @test copysign(Sign(+), Sign(+)) === Sign(+)
+        @test copysign(Sign(-), Sign(+)) === Sign(+)
+        @test copysign(Sign(+), Sign(-)) === Sign(-)
+        @test copysign(Sign(-), Sign(-)) === Sign(-)
+        @test copysign(Sign(+), 0) === Sign(+)
+        @test copysign(Sign(+), +1) === Sign(+)
+        @test copysign(Sign(+), -1) === Sign(-)
+        @test copysign(Sign(+), Float16(+0.0)) === Sign(+)
+        @test copysign(Sign(+), Float32(-0.0)) === Sign(-)
+        @test copysign(Sign(-), 0x00) === Sign(+)
+        @test copysign(Sign(-), +0x01) === Sign(+)
+        @test copysign(Sign(-), -0x01) === Sign(+)
+        @test copysign(Sign(-), Float32(+Inf)) === Sign(+)
+        @test copysign(Sign(-), Float64(-Inf)) === Sign(-)
+        # TODO: should we define behavior for copysign(::Sign, NaN)?
         # Addition
         @test Sign(+) + Sign(+) === 2
         @test Sign(+) + Sign(-) === 0
