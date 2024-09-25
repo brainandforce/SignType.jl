@@ -229,6 +229,92 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test rem(Sign(+), Sign(-)) === false
         @test rem(Sign(-), Sign(-)) === false
     end
+    @testset "Arithmetic with other types" begin
+        # Float64
+        @test Sign(+) * +2.0 === +2.0
+        @test Sign(-) * +2.0 === -2.0
+        @test Sign(+) * -2.0 === -2.0
+        @test Sign(-) * -2.0 === +2.0
+        @test +2.0 * Sign(+) === +2.0
+        @test +2.0 * Sign(-) === -2.0
+        @test -2.0 * Sign(+) === -2.0
+        @test -2.0 * Sign(-) === +2.0
+        @test Sign(+) / +2.0 === inv(+2.0)
+        @test Sign(-) / +2.0 === inv(-2.0)
+        @test Sign(+) / -2.0 === inv(-2.0)
+        @test Sign(-) / -2.0 === inv(+2.0)
+        @test +2.0 / Sign(+) === +2.0
+        @test +2.0 / Sign(-) === -2.0
+        @test -2.0 / Sign(+) === -2.0
+        @test -2.0 / Sign(-) === +2.0
+        # Rational
+        @test Sign(+) * +1//420 === +1//420
+        @test Sign(-) * +1//420 === -1//420
+        @test Sign(+) * -1//420 === -1//420
+        @test Sign(-) * -1//420 === +1//420
+        @test +1//420 * Sign(+) === +1//420
+        @test +1//420 * Sign(-) === -1//420
+        @test -1//420 * Sign(+) === -1//420
+        @test -1//420 * Sign(-) === +1//420
+        @test Sign(+) / +1//420 === inv(+1//420)
+        @test Sign(-) / +1//420 === inv(-1//420)
+        @test Sign(+) / -1//420 === inv(-1//420)
+        @test Sign(-) / -1//420 === inv(+1//420)
+        @test +1//420 / Sign(+) === +1//420
+        @test +1//420 / Sign(-) === -1//420
+        @test -1//420 / Sign(+) === -1//420
+        @test -1//420 / Sign(-) === +1//420
+        # Complex{Float64}
+        @test Sign(+) * (+6.0 + 9.0im) === +6.0 + 9.0im
+        @test Sign(-) * (+6.0 + 9.0im) === -6.0 - 9.0im
+        @test Sign(+) * (-6.0 - 9.0im) === -6.0 - 9.0im
+        @test Sign(-) * (-6.0 - 9.0im) === +6.0 + 9.0im
+        @test (+6.0 + 9.0im) * Sign(+) === +6.0 + 9.0im
+        @test (+6.0 + 9.0im) * Sign(-) === -6.0 - 9.0im
+        @test (-6.0 - 9.0im) * Sign(+) === -6.0 - 9.0im
+        @test (-6.0 - 9.0im) * Sign(-) === +6.0 + 9.0im
+        @test Sign(+) / (+6.0 + 9.0im) === inv(+6.0 + 9.0im)
+        @test Sign(-) / (+6.0 + 9.0im) === inv(-6.0 - 9.0im)
+        @test Sign(+) / (-6.0 - 9.0im) === inv(-6.0 - 9.0im)
+        @test Sign(-) / (-6.0 - 9.0im) === inv(+6.0 + 9.0im)
+        @test (+6.0 + 9.0im) / Sign(+) === +6.0 + 9.0im
+        @test (+6.0 + 9.0im) / Sign(-) === -6.0 - 9.0im
+        @test (-6.0 - 9.0im) / Sign(+) === -6.0 - 9.0im
+        @test (-6.0 - 9.0im) / Sign(-) === +6.0 + 9.0im
+        # Complex{Bool}
+        @test Sign(+) * Complex(false, false) === Complex(0, 0)
+        @test Sign(+) * Complex(false, true) === Complex(0, +1)
+        @test Sign(+) * Complex(true, false) === Complex(+1, 0)
+        @test Sign(+) * Complex(true, true) === Complex(+1, +1)
+        @test Sign(-) * Complex(false, false) === Complex(0, 0)
+        @test Sign(-) * Complex(false, true) === Complex(0, -1)
+        @test Sign(-) * Complex(true, false) === Complex(-1, 0)
+        @test Sign(-) * Complex(true, true) === Complex(-1, -1)
+        @test Complex(false, false) * Sign(+) === Complex(0, 0)
+        @test Complex(false, true) * Sign(+) === Complex(0, +1)
+        @test Complex(true, false) * Sign(+) === Complex(+1, 0)
+        @test Complex(true, true) * Sign(+) === Complex(+1, +1)
+        @test Complex(false, false) * Sign(-) === Complex(0, 0)
+        @test Complex(false, true) * Sign(-) === Complex(0, -1)
+        @test Complex(true, false) * Sign(-) === Complex(-1, 0)
+        @test Complex(true, true) * Sign(-) === Complex(-1, -1)
+        @test Sign(+) / Complex(false, false) === +inv(Complex(0, 0))
+        @test Sign(+) / Complex(false, true) === +inv(Complex(0, +1))
+        @test Sign(+) / Complex(true, false) === +inv(Complex(+1, 0))
+        @test Sign(+) / Complex(true, true) === +inv(Complex(+1, +1))
+        @test Sign(-) / Complex(false, false) === -inv(Complex(0, 0))   # NaN has a sign!
+        @test Sign(-) / Complex(false, true) === -inv(Complex(0, +1))   # signed zero also
+        @test Sign(-) / Complex(true, false) === -inv(Complex(+1, 0))   # causes problems here
+        @test Sign(-) / Complex(true, true) === -inv(Complex(+1, +1))
+        @test Complex(false, false) / Sign(+) === Complex(0, 0)
+        @test Complex(false, true) / Sign(+) === Complex(0, +1)
+        @test Complex(true, false) / Sign(+) === Complex(+1, 0)
+        @test Complex(true, true) / Sign(+) === Complex(+1, +1)
+        @test Complex(false, false) / Sign(-) === Complex(0, 0)
+        @test Complex(false, true) / Sign(-) === Complex(0, -1)
+        @test Complex(true, false) / Sign(-) === Complex(-1, 0)
+        @test Complex(true, true) / Sign(-) === Complex(-1, -1)
+    end
     @testset "Properties" begin
         @test sign(Sign(+)) === Sign(+)
         @test sign(Sign(-)) === Sign(-)
