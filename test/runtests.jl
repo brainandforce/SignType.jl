@@ -230,6 +230,23 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test rem(Sign(-), Sign(-)) === false
     end
     @testset "Arithmetic with other types" begin
+        # Int
+        @test Sign(+) * +2 === +2
+        @test Sign(-) * +2 === -2
+        @test Sign(+) * -2 === -2
+        @test Sign(-) * -2 === +2
+        @test +2 * Sign(+) === +2
+        @test +2 * Sign(-) === -2
+        @test -2 * Sign(+) === -2
+        @test -2 * Sign(-) === +2
+        @test Sign(+) / +2 === inv(+2)
+        @test Sign(-) / +2 === inv(-2)
+        @test Sign(+) / -2 === inv(-2)
+        @test Sign(-) / -2 === inv(+2)
+        @test +2 / Sign(+) === +2
+        @test +2 / Sign(-) === -2
+        @test -2 / Sign(+) === -2
+        @test -2 / Sign(-) === +2
         # Float64
         @test Sign(+) * +2.0 === +2.0
         @test Sign(-) * +2.0 === -2.0
@@ -314,6 +331,7 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test Complex(false, true) / Sign(-) === Complex(0, -1)
         @test Complex(true, false) / Sign(-) === Complex(-1, 0)
         @test Complex(true, true) / Sign(-) === Complex(-1, -1)
+        # TODO: need a test with a type subtyping Number but not Real or Complex
     end
     @testset "Properties" begin
         @test sign(Sign(+)) === Sign(+)
