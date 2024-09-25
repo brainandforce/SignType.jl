@@ -16,28 +16,36 @@ be thought of as `Int1`, with no bits representing digits.
 
 # Construction
 
-`Sign` objects can be constructed from `Real` numbers, returning `reinterpret(Sign, signbit(x))`.
-Note that for inputs that correspond to zero, this returns `Sign(+)` for any integer stored with a
-twos' complement representation. With the exception of zero elements, the behavior matches
-`Base.sign`.
+Special constructors that utilize the functions `+` and `-` as literal inputs are defined, so that
+`Sign(+)` and `Sign(-)` behave as one would expect.
+
+`Sign` objects can be constructed from `Real` numbers, with the default implementation being
+`reinterpret(Sign, signbit(x))`. This is the correct implementation for every `Real` concrete type
+provided by Julia Base: a `false` signbit produces `Sign(+)`, and a `true` signbit produces
+`Sign(-)`. Types without signbits (e.g. `Unsigned` and `Bool`) will always return `Sign(+)`.
+
+The result of calling `Sign` on a zero element depends on how the type represents zero. For types
+with a signed zero representation (e.g. IEEE floats) the sign associated with the zero element is
+returned. For types without a signed zero representation (e.g. two's complement integers), the
+signbit associated with the zero element is used to construct the `Sign`.
+
+Any types `T<:Real` deviating from standard signbit conventions (`false` being positive,
+`true` being negative, zero elements defaulting to the signbit of its representation) must define
+the constructor `Sign(::T)`. The constructor should never throw an error.
 
 For other types `T<:Number`, `Sign(::T)` is only defined if `T` represents an element of an ordered
 field, allowing for well-defined comparisons of elements. `Sign(z::Complex)` will throw an
 `InexactError` unless `imag(z)` is zero.
 
-Special constructors that utilize the functions `+` and `-` as literal inputs are defined, so that
-`Sign(+)` and `Sign(-)` behave as one would expect.
-
 # Conversion
 
 Conversion is identical to construction, with one important exception: converting a zero element
-to a `Sign` always fails with an `InexactError`, even though constructing it always succeeds 
-(defaulting to the the sign associated with that element):
+to a `Sign` always fails with an `InexactError`, even though constructing it always succeeds:
 ```julia-repl
 julia> Sign(-0.0)
 Sign(-)
 
-julia> convert(Sign, 0.0)
+julia> convert(Sign, -0.0)
 ERROR: InexactError: convert(Sign, -0.0)
 Stacktrace:
 ...
@@ -85,6 +93,9 @@ Sign(::typeof(+)) = reinterpret(Sign, false)
 Sign(::typeof(-)) = reinterpret(Sign, true)
 
 # Obtain signs from real numbers
+# NOTE: signbit is implementation-dependent!
+# There are no guarantees that signbit(x) is false for positive values and true for negative values
+# There are also no guarantees that zero for any type has a particular sign
 Sign(x::T) where T<:Real = reinterpret(Sign, signbit(x))
 # Needed to resolve method ambiguities
 Sign(x::Sign) = x
