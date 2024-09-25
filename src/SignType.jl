@@ -200,6 +200,31 @@ div(x::Sign, y::Sign, ::RoundingMode{:Down}) = *(x, y)
 div(x::Sign, y::Sign, ::RoundingMode{:Up}) = *(x, y)
 rem(::Sign, ::Sign) = false
 
+# Avoid type promotion in some multiplication operations
+*(x::Sign, y::Number) = flipsign(y, x)
+*(x::Number, y::Sign) = flipsign(x, y)
+# Needed to resolve method ambiguities
+*(x::Sign, y::Real) = flipsign(y, x)
+*(x::Real, y::Sign) = flipsign(x, y)
+*(x::Sign, y::Integer) = flipsign(y, x)
+*(x::Integer, y::Sign) = flipsign(x, y)
+*(x::Sign, y::Rational) = flipsign(y, x)
+*(x::Rational, y::Sign) = flipsign(x, y)
+
+*(x::Sign, y::Complex) = flipsign(y, x)
+*(x::Complex, y::Sign) = flipsign(x, y)
+*(x::Sign, y::Complex{Bool}) = flipsign(y, x)
+*(x::Complex{Bool}, y::Sign) = flipsign(x, y)
+
+# Same, but with division
+/(x::Number, y::Sign) = flipsign(x, y)
+/(x::Sign, y::Number) = flipsign(inv(y), x)
+# Needed to resolve method ambiguities
+/(x::Rational, y::Sign) = flipsign(x, y)
+/(x::Sign, y::Rational) = flipsign(inv(y), x)
+/(x::Complex, y::Sign) = flipsign(x, y)
+/(x::Sign, y::Complex) = flipsign(inv(y), x)
+
 #---zero() and one()-------------------------------------------------------------------------------#
 
 # IMPORTANT: zero(Sign) cannot be of type Sign!
