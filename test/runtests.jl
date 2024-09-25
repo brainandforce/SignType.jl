@@ -135,7 +135,7 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test !Sign(+) === Sign(-)
         @test !Sign(-) === Sign(+)
     end
-    @testset "Arithmetic" begin
+    @testset "Sign manipulation" begin
         # Negation
         @test -Sign(+) === Sign(-)
         @test -Sign(-) === Sign(+)
@@ -172,6 +172,8 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test copysign(Sign(-), Float32(+Inf)) === Sign(+)
         @test copysign(Sign(-), Float64(-Inf)) === Sign(-)
         # TODO: should we define behavior for copysign(::Sign, NaN)?
+    end
+    @testset "Arithmetic" begin
         # Addition
         @test Sign(+) + Sign(+) === 2
         @test Sign(+) + Sign(-) === 0
