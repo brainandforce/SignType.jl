@@ -130,10 +130,18 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         # not
         @test ~Sign(+) === Sign(-)
         @test ~Sign(-) === Sign(+)
-        # Boolean operators
-        # not
         @test !Sign(+) === Sign(-)
         @test !Sign(-) === Sign(+)
+        # nand
+        @test Sign(+) ⊼ Sign(+) === Sign(-)
+        @test Sign(+) ⊼ Sign(-) === Sign(-)
+        @test Sign(-) ⊼ Sign(-) === Sign(+)
+        @test Sign(-) ⊼ Sign(+) === Sign(-)
+        # nor
+        @test Sign(+) ⊽ Sign(+) === Sign(-)
+        @test Sign(+) ⊽ Sign(-) === Sign(+)
+        @test Sign(-) ⊽ Sign(-) === Sign(+)
+        @test Sign(-) ⊽ Sign(+) === Sign(+)
     end
     @testset "Sign manipulation" begin
         # Negation
