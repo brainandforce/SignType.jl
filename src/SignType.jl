@@ -2,7 +2,7 @@ module SignType
 
 import Base: promote_rule, convert
 import Base: <, iseven, isodd, abs, abs2
-import Base: &, |, ~, !, xor
+import Base: &, |, ~, !, ⊻, xor
 import Base: flipsign, copysign, +, -, *, /, //, ^, div, rem
 import Base: iszero, isone, zero, one
 import Base: show
@@ -158,7 +158,7 @@ for f in (:~, :!)
     @eval $f(x::Sign) = reinterpret(Sign, $f(reinterpret(Bool, x)))
 end
 
-for f in (:&, :|, :xor)
+for f in (:&, :|, :⊻)
     @eval $f(x::Sign, y::Sign) = reinterpret(Sign, $f(reinterpret(Bool, x), reinterpret(Bool, y)))
 end
 
