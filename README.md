@@ -6,7 +6,8 @@
 
 This package provides the `Sign` type, which represents the sign bit of a signed integer or float.
 While the data stored by `Sign` is identical to that of `Bool`, the arithmetic semantics are defined
-to match the behaviors of the real numbers `+1` and `-1`.
+to match the behaviors of the real numbers `+1` and `-1`. The logical semantics of `Sign` match
+those of the underlying Boolean representation.
 
 ## Construction
 
@@ -36,6 +37,11 @@ subtraction of `Sign` instances (or `Sign` and `Bool` instances) results in an `
 
 Rational division of `Sign` instances returns a `Sign`, as `Rational{Sign}` can only represent the
 exact same range of values as `Sign`.
+
+## Logic
+
+The logical operations defined on `Sign` treat `Sign(+)` and `Sign(-)` as their reinterpreted
+Boolean values `false` and `true`, respectively.
 
 ## Other number systems
 
