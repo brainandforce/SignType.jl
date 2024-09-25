@@ -172,6 +172,8 @@ flipsign(x::Sign, y::Float16) = flipsign(x, Sign(y))
 flipsign(x::Sign, y::Float32) = flipsign(x, Sign(y))
 flipsign(x::Sign, y::Float64) = flipsign(x, Sign(y))
 flipsign(x::Sign, y::Real) =  flipsign(x, Sign(y))
+# The default implementation of this is not type-stable
+flipsign(x::Complex{Bool}, y::Sign) = flipsign(convert(Complex{Int}, x), y)
 
 copysign(::Sign, y::Real) = Sign(y)
 # Needed to resolve method ambiguities
