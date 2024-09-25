@@ -165,7 +165,14 @@ end
 #---Arithmetic-------------------------------------------------------------------------------------#
 
 -(x::Sign) = ~x
+
 flipsign(x::Sign, y::Sign) = xor(x, y)
+flipsign(::Sign, ::Bool) = Sign(+)
+flipsign(x::Sign, y::Float16) = flipsign(x, Sign(y))
+flipsign(x::Sign, y::Float32) = flipsign(x, Sign(y))
+flipsign(x::Sign, y::Float64) = flipsign(x, Sign(y))
+flipsign(x::Sign, y::Real) =  flipsign(x, Sign(y))
+
 copysign(::Sign, y::Real) = Sign(y)
 # Needed to resolve method ambiguities
 copysign(::Sign, y::Signed) = Sign(y)
