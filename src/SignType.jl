@@ -96,7 +96,7 @@ Sign(::typeof(-)) = reinterpret(Sign, true)
 # NOTE: signbit is implementation-dependent!
 # There are no guarantees that signbit(x) is false for positive values and true for negative values
 # There are also no guarantees that zero for any type has a particular sign
-Sign(x::T) where T<:Real = reinterpret(Sign, signbit(x))
+Sign(x::Real) = isnan(x) ? throw(InexactError(:Sign, Sign, x)) : reinterpret(Sign, signbit(x))
 # Needed to resolve method ambiguities
 Sign(x::Sign) = x
 Sign(x::Rational) = reinterpret(Sign, signbit(x))
@@ -137,6 +137,7 @@ Base.BigFloat(s::Sign) = BigFloat(ifelse(reinterpret(Bool, s), -1, 1))
 
 (::Type{T})(s::Sign) where T<:Real = T(ifelse(reinterpret(Bool, s), -1, 1))
 
+# Conversion must fail on zero values as they are not representable
 convert(::Type{Sign}, x::Real) = iszero(x) ? throw(InexactError(:convert, Sign, x)) : Sign(x)
 
 #---Promotion rules--------------------------------------------------------------------------------#
