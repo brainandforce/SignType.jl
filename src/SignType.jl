@@ -101,7 +101,7 @@ Sign(x::Real) = isnan(x) ? throw(InexactError(:Sign, Sign, x)) : reinterpret(Sig
 Sign(x::Sign) = x
 Sign(x::Rational) = reinterpret(Sign, signbit(x))
 Sign(x::BigInt) = reinterpret(Sign, signbit(x))
-Sign(x::BigFloat) = reinterpret(Sign, signbit(x))
+Sign(x::BigFloat) = isnan(x) ? throw(InexactError(:Sign, Sign, x)) : reinterpret(Sign, signbit(x))
 
 #---Pretty printing--------------------------------------------------------------------------------#
 
