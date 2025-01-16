@@ -27,6 +27,8 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test reinterpret(Bool, Sign(-0.0)) === signbit(-0.0)
         @test reinterpret(Bool, Sign(big(+1.0))) === signbit(big(+1.0))
         @test reinterpret(Bool, Sign(big(-1.0))) === signbit(big(-1.0))
+        @test_throws InexactError Sign(NaN)
+        @test_throws InexactError Sign(-NaN)
         # Rationals
         @test reinterpret(Bool, Sign(+1//2)) === signbit(+1//2)
         @test reinterpret(Bool, Sign(-1//2)) === signbit(-1//2)
@@ -53,6 +55,7 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         for T in FLOAT_TYPES
             @test convert(Sign, +one(T)) === Sign(+)
             @test convert(Sign, -one(T)) === Sign(-)
+            @test_throws InexactError convert(Sign, T(NaN))
             # Constructing a `Sign` should always match the result of `signbit` when reinterpreted
             @test reinterpret(Bool, Sign(zero(T))) === signbit(signbit(zero(T)))
             # TODO: Conversion of a zero float (which has a sign) fails
@@ -187,7 +190,6 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test copysign(Sign(-), -0x01) === Sign(+)
         @test copysign(Sign(-), Float32(+Inf)) === Sign(+)
         @test copysign(Sign(-), Float64(-Inf)) === Sign(-)
-        # TODO: should we define behavior for copysign(::Sign, NaN)?
     end
     @testset "Arithmetic" begin
         # Addition
