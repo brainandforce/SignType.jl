@@ -24,14 +24,18 @@ Special constructors that utilize the functions `+` and `-` as literal inputs ar
 provided by Julia Base: a `false` signbit produces `Sign(+)`, and a `true` signbit produces
 `Sign(-)`. Types without signbits (e.g. `Unsigned` and `Bool`) will always return `Sign(+)`.
 
-The result of calling `Sign` on a zero element depends on how the type represents zero. For types
-with a signed zero representation (e.g. IEEE floats) the sign associated with the zero element is
-returned. For types without a signed zero representation (e.g. two's complement integers), the
-signbit associated with the zero element is used to construct the `Sign`.
+Constructing `Sign` on a zero element depends on how the type represents zero. For types with a
+signed zero representation (e.g. IEEE floats) the sign associated with the zero element is returned.
+For types without a signed zero representation (e.g. two's complement integers), the signbit
+associated with the zero element is used to construct the `Sign`.
+
+Constructing `Sign` from any NaN value throws an `InexactError`, since the signbit of a NaN value
+does not have any arithmetic meaning.
 
 Any types `T<:Real` deviating from standard signbit conventions (`false` being positive,
 `true` being negative, zero elements defaulting to the signbit of its representation) must define
-the constructor `Sign(::T)`. The constructor should never throw an error.
+the constructor `Sign(::T)`. The constructor should not throw an error unless `T` can represent a
+NaN value.
 
 For other types `T<:Number`, `Sign(::T)` is only defined if `T` represents an element of an ordered
 field, allowing for well-defined comparisons of elements. `Sign(z::Complex)` will throw an

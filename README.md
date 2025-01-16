@@ -22,13 +22,15 @@ representations `Sign(+)` or `Sign(-)`.
 Calling `Sign` with a `Bool`, `Unsigned`, or any other type which cannot represent negative numbers
 always returns `Sign(+)`. Use `reinterpret(::Type{Bool}, ::Sign)` to treat a `Sign` as a `Bool`.
 
-## Zero elements
+## Zero elements and NaNs
 
 Zero elements are treated specially, since `Sign` cannot represent zero:
   * Calling the `Sign` constructor on a zero element returns the `Sign` that would be constructed
     for the signbit.
   * Calling `convert(Sign, x)` for a zero element `x` fails with an `InexactError`.
   * `zero(::Sign)` returns `false`.
+
+Construction or conversion from NaN values always throws an `InexactError`.
 
 ## Arithmetic
 
