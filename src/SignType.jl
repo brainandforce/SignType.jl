@@ -66,6 +66,7 @@ In general, `Sign` promotes in the following manner:
     results in a `Float64` by default.
   * `Sign` and `T<:Real` promote to `T` by default. This assumes `T` can represent negative numbers;
     a promote rule must be defined if this is not the case.
+  * `Sign` and `T<:Unsigned` promote to `signed(T)`.
 
 # Arithmetic
 
@@ -76,9 +77,6 @@ subtraction of `Bool` instances.
 The rational division operator `//` between two `Sign` objects returns a `Sign`, not a
 `Rational{Sign}`, as the two types represent the exact same set of values, rendering 
 `Rational{Sign}` redundant.
-
-The square root of `Sign(+)` returns `Sign(+)`, not a `Float64` as other square root operations do.
-The square root of `Sign(-)` throws a `DomainError`; use `sqrt(complex(Sign(-)))`.
 
 !!! danger
     Because zero is not representable by a `Sign` type, `zero(Sign)` returns `false` as a strong
