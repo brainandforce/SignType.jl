@@ -275,6 +275,8 @@ struct OrderedFieldError <: Exception
 end
 =#
 
+include("random.jl")
+
 export Sign
 
 end
