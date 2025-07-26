@@ -1,5 +1,6 @@
 using SignType
 using Aqua, Test
+import Random
 
 Aqua.test_all(SignType; unbound_args = false)
 
@@ -376,5 +377,22 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
     @testset "Printed representation" begin
         @test eval(Meta.parse(repr("text/plain", Sign(+)))) === Sign(+)
         @test eval(Meta.parse(repr("text/plain", Sign(-)))) === Sign(-)
+    end
+    @testset "Random Number Generation" begin
+        @test typeof(rand(Sign)) == Sign
+        @test typeof(rand(Random.Xoshiro(), Sign)) == Sign
+        @test typeof(rand(Random.MersenneTwister(), Sign)) == Sign
+        X = Array{Sign, 1}(undef, 1000)
+        Random.rand!(Random.Xoshiro(1234), X)
+        Y = rand(Random.Xoshiro(1234), Sign, 1000)
+        @test X == Y
+        Random.rand!(X)
+        @test X != Y
+        Random.rand!(Y)
+        @test X != Y
+        Random.rand!(Random.MersenneTwister(1234), X)
+        @test X == rand(Random.MersenneTwister(1234), Sign, 1000)
+        Random.rand!(Random.MersenneTwister(1234), Y)
+        @test X == Y
     end
 end
