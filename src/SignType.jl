@@ -144,9 +144,24 @@ convert(::Type{Sign}, x::Real) = iszero(x) ? throw(InexactError(:convert, Sign, 
 
 #---Promotion rules--------------------------------------------------------------------------------#
 
+#=
+These methods are bad! Recording them here for future reference.
+See: https://github.com/JuliaLang/julia/issues/55866
+
 promote_rule(::Type{Sign}, ::Type{T}) where T<:Integer = signed(T)
-promote_rule(::Type{Sign}, ::Type{T}) where T<:AbstractIrrational = Float64
 promote_rule(::Type{Sign}, ::Type{T}) where T<:Real = T
+=#
+
+promote_rule(::Type{Sign}, ::Type{T}) where T<:Unsigned = signed(T)
+promote_rule(::Type{Sign}, ::Type{T}) where T<:AbstractFloat = T
+promote_rule(::Type{Sign}, ::Type{T}) where T<:AbstractIrrational = Float64
+
+promote_rule(::Type{Sign}, ::Type{Int8}) = Int8
+promote_rule(::Type{Sign}, ::Type{Int16}) = Int16
+promote_rule(::Type{Sign}, ::Type{Int32}) = Int32
+promote_rule(::Type{Sign}, ::Type{Int64}) = Int64
+promote_rule(::Type{Sign}, ::Type{Int128}) = Int128
+
 # TODO: Since Rational{Sign} is redundant, just convert the result to Sign
 # promote_rule(::Type{Sign}, ::Type{Rational{Sign}}) === Sign
 
