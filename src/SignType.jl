@@ -162,6 +162,11 @@ promote_rule(::Type{Sign}, ::Type{Int32}) = Int32
 promote_rule(::Type{Sign}, ::Type{Int64}) = Int64
 promote_rule(::Type{Sign}, ::Type{Int128}) = Int128
 
+# TODO: should this be Int8 instead?
+# Int is used because +(::Bool, ::Bool) promotes the result to Int
+# and it mirrors the old (broken) definition above
+promote_rule(::Type{Sign}, ::Type{Bool}) = Int
+
 # TODO: Since Rational{Sign} is redundant, just convert the result to Sign
 # promote_rule(::Type{Sign}, ::Type{Rational{Sign}}) === Sign
 
