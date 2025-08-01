@@ -378,7 +378,7 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test eval(Meta.parse(repr("text/plain", Sign(+)))) === Sign(+)
         @test eval(Meta.parse(repr("text/plain", Sign(-)))) === Sign(-)
     end
-    @testset "Random Number Generation" begin
+    @testset "Random number generation" begin
         @test typeof(rand(Sign)) == Sign
         @test typeof(rand(Random.Xoshiro(), Sign)) == Sign
         @test typeof(rand(Random.MersenneTwister(), Sign)) == Sign
