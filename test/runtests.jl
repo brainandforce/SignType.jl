@@ -375,8 +375,14 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         @test Base.checked_abs(Sign(-)) === Sign(+)
     end
     @testset "Printed representation" begin
-        @test eval(Meta.parse(repr("text/plain", Sign(+)))) === Sign(+)
-        @test eval(Meta.parse(repr("text/plain", Sign(-)))) === Sign(-)
+        @test eval(Meta.parse(repr(Sign(+)))) === Sign(+)
+        @test eval(Meta.parse(repr(Sign(-)))) === Sign(-)
+        @test repr("text/plain", Sign(+)) == "Sign(+)"
+        @test repr("text/plain", Sign(-)) == "Sign(-)"
+        @test repr("text/plain", Sign(+), context = (:compact => true)) == "+"
+        @test repr("text/plain", Sign(-), context = (:compact => true)) == "-"
+        @test repr("text/plain", Sign(+), context = (:typeinfo => Sign)) == "+"
+        @test repr("text/plain", Sign(-), context = (:typeinfo => Sign)) == "-"
     end
     @testset "Random number generation" begin
         @test typeof(rand(Sign)) == Sign
