@@ -403,4 +403,46 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         Random.rand!(Random.MersenneTwister(1234), Y)
         @test X == Y
     end
+    @testset "SignArray" begin
+        dims = (4, 20)
+        @test size(SignArray{2}(undef, dims...)) === dims
+        @test size(SignMatrix(undef, dims...)) === dims
+        @test size(SignArray(undef, dims...)) === dims
+        @test size(SignArray{1}(undef, 42)) === tuple(42)
+        @test size(SignVector(undef, 42)) === tuple(42)
+        @test size(SignArray(undef, 42)) === tuple(42)
+        @test all(x -> x === Sign(+), positives())
+        @test all(x -> x === Sign(-), negatives())
+        # Filling arrays
+        p = positives(1, 3, 3, 7)
+        n = negatives(1, 3, 3, 7)
+        @test all(x -> x === Sign(+), p)
+        @test all(x -> x === Sign(-), n)
+        # Mutation
+        p[1, 2, 3, 4] = -1
+        @test p[1, 2, 3, 4] === Sign(-)
+        # LinearIndices(CartesianIndices(p))[1, 2, 3, 4] === 35
+        p[35] = Sign(+)
+        @test p[1, 2, 3, 4] === Sign(+)
+        # Similar arrays
+        sp1 = similar(p)
+        @test sp1 isa SignArray{ndims(p)}
+        @test size(sp1) == size(p)
+        sp2 = similar(n, dims)
+        @test sp2 isa SignMatrix
+        @test size(sp2) === dims
+        sn1 = similar(n, Bool)
+        @test sn1 isa BitArray{ndims(n)}
+        @test size(sn1) === size(n)
+        sn2 = similar(n, Bool, dims)
+        @test sn2 isa BitMatrix
+        @test size(sn2) === dims
+        b = BitArray(undef, 1, 2, 3)
+        sb1 = similar(b, Sign)
+        @test sb1 isa SignArray{ndims(b)}
+        @test size(sb1) === size(b)
+        sb2 = similar(b, Sign, 0)
+        @test sb2 isa SignVector
+        @test all(iszero, size(sb2))
+    end
 end
