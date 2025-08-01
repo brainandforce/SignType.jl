@@ -6,6 +6,7 @@ import Base: &, |, ~, !, ⊻, xor
 import Base: flipsign, copysign, +, -, *, /, //, ^, div, rem
 import Base: iszero, isone, zero, one
 import Base: show
+import Base: OneTo, Dims
 
 """
     Sign <: Signed
@@ -304,8 +305,10 @@ struct OrderedFieldError <: Exception
 end
 =#
 
-include("random.jl")
-
 export Sign
+include("signarray.jl")
+export SignArray, SignVector, SignMatrix
+export positives, negatives
+include("random.jl")
 
 end
