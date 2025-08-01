@@ -109,6 +109,15 @@ Sign(x::BigFloat) = isnan(x) ? throw(InexactError(:Sign, Sign, x)) : reinterpret
 
 show(io::IO, s::Sign) = print(io, Sign, '(', reinterpret(Bool, s) ? '-' : '+', ')')
 
+# Allows for compact representation as + or - in arrays
+function show(io::IO, ::MIME"text/plain", s::Sign)
+    if get(io, :compact, false)::Bool || get(io, :typeinfo, Any) === Sign
+        print(io, reinterpret(Bool, s) ? '-' : '+')
+    else
+        show(io, s)
+    end
+end
+
 #---Constructors and conversion for other primitive numeric types----------------------------------#
 
 Base.Bool(s::Sign) = Bool(ifelse(reinterpret(Bool, s), -1, 1))
