@@ -1,7 +1,7 @@
 name = "SignType"
 uuid = "9609daed-dfca-48a0-b6c8-6de1ae2e1f05"
 authors = ["Brandon Flores (bsflores@wisc.edu)"]
-version = "0.1.1"
+version = "0.1.2-dev"
 
 [deps]
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
