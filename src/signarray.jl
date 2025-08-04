@@ -30,6 +30,22 @@ SignArray(::UI, dims::Tuple{Vararg{Integer,N}}) where N = SignArray{N}(undef, di
 Base.size(s::SignArray) = size(s.data)
 Base.getindex(s::SignArray, i...) = reinterpret(Sign, s.data[i...])
 Base.setindex!(s::SignArray, x, i...) = setindex!(s.data, reinterpret(Bool, convert(Sign, x)), i...)
+Base.IndexStyle(::Type{<:SignArray}) = IndexLinear()
+
+#---More general array constructors----------------------------------------------------------------#
+
+function SignArray(a::AbstractArray)
+    result = SignArray(undef, size(a))
+    @inbounds for i in eachindex(a)
+        result[i] = Sign(a[i])
+    end
+    return result
+end
+
+SignArray{N}(a::AbstractArray{<:Any,N}) where N = SignArray(a)
+
+SignArray(s::SignArray) = copy(s)
+(::T)(s::T) where T<:SignArray = copy(s)
 
 #---similar----------------------------------------------------------------------------------------#
 
