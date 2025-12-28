@@ -1,4 +1,4 @@
-import Random: rand, rand!, AbstractRNG, SamplerType, TaskLocalRNG, Xoshiro, UnsafeView
+import Random: rand, rand!, AbstractRNG, SamplerType, TaskLocalRNG, Xoshiro, UnsafeView, Sampler
 
 rand(rng::AbstractRNG, ::SamplerType{Sign})::Sign = reinterpret(Sign, rand(rng, Bool))
 
@@ -14,6 +14,9 @@ function rand!(rng::AbstractRNG, A::DenseSignArrays)
     GC.@preserve A rand!(rng, UnsafeView{Bool}(pointer(A), length(A)), SamplerType{Bool}())
     return A
 end
+
+# The below method fixes dispatch from the non-mutating vector call to the mutating rand call
+rand!(rng::AbstractRNG, A::DenseSignArrays, sp::Sampler) = rand!(rng, A)
 
 function rand(rng::AbstractRNG, ::SamplerType{Sign}, dim1::Integer, extra_dims::Integer...)
     # Strange function signature to avoid method ambiguities

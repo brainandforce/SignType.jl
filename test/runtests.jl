@@ -393,7 +393,7 @@ const SIGNED_RATIONALS = map(T -> Rational{T}, SIGNED_TYPES)
         Y = rand(Random.Xoshiro(1234), Sign, 1000)
         # This test probably breaks due to a change in dispatch
         # (scalar vs. vector methods)
-        @test X == Y broken = (VERSION >= v"1.12")
+        @test X == Y
         Random.rand!(X)
         @test X != Y
         Random.rand!(Y)
